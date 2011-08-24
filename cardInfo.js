@@ -11,9 +11,9 @@
 */
 
 function cardInfo(cardNumber) {
-    this.length = cardNumber.length; // determine length once so it isn't recalculated
+    this.length = cardNumber.length; // determine length once so it doesn't need to be recalculated for validateLuhn or validateCardLength
     this.number = cardNumber;
-    this.type = "unknown";
+    this.type = "Unknown";
     
     this.luhnValid = validateLuhn(cardNumber);
     // MUST check for luhnValid == null if China UnionPay is an accepted type, since it does not use the Luhn algorithm for number verification
@@ -67,9 +67,6 @@ function cardInfo(cardNumber) {
             subFirstFour == "4917" || cardNumber.substring(0,6) == "417500") {
         this.type = "Visa Electron";
     }
-    else {
-        this.type = "Unknown";
-    }
 
     this.lengthValid = validateCardLength(this);
     
@@ -89,7 +86,8 @@ function cardInfo(cardNumber) {
 function validateLuhn(cardNumber) {
     // uses algorithm at http://en.wikipedia.org/wiki/Luhn_algorithm to determine card number validity
     var sum = 0; // set initial sum at 0
-    var oddOrEven = 1; // allows us to determine which numbers to double while working backwards on a number that can be odd or even lengthed
+    var oddOrEven = 1; // allows us to determine which numbers to double while working backwards on a number that can be odd or even in length
+    var boolReturn = false;
     
     for (i=cardNumber.length; i>0; i--) {
         var curNum = parseInt(cardNumber.substring(i-1,i));
@@ -107,9 +105,9 @@ function validateLuhn(cardNumber) {
         oddOrEven++;
     }
     if (sum % 10 == 0) {
-        return true;
+    	boolReturn =  true;
     }
-    return false;
+    return boolReturn;
 }
 
 function validateCardLength(cardInfo) {
